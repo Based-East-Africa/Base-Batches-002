@@ -51,7 +51,7 @@ const sdk = createBaseAccountSDK({
 });
 ```
 
-**Explain**: This creates the SDK instance that bridges OnchainKit's wallet connection with Base Account features.
+This creates the SDK instance that bridges OnchainKit's wallet connection with Base Account features.
 
 #### 2. Prepare Batch Calls
 
@@ -75,7 +75,7 @@ const calls = [
 ];
 ```
 
-**Explain**: Each call is a separate transfer. The `data: '0x'` means it's a simple ETH transfer (no contract interaction).
+Each call is a separate transfer. The `data: '0x'` means it's a simple ETH transfer (no contract interaction).
 
 #### 3. Execute Batch Transaction
 
@@ -92,7 +92,8 @@ const result = await provider.request({
 });
 ```
 
-**Explain**:
+
+
 - `atomicRequired: true` = all-or-nothing (important for payments)
 - `wallet_sendCalls` = EIP-5792 standard method
 - Returns transaction hash for tracking
@@ -111,8 +112,10 @@ https://app.fuul.xyz/landing/coinbase-cdp?referrer=0x4dc7f61e7B7Ea65729c6A135fa9
 
 1. **Clone & Install**
    ```bash
-   git clone [your-repo]
-   cd SplitPayment
+   git clone https://github.com/Based-East-Africa/Base-Batches-002
+
+   cd day3-base-accounts
+
    npm install
    ```
 
@@ -127,25 +130,31 @@ https://app.fuul.xyz/landing/coinbase-cdp?referrer=0x4dc7f61e7B7Ea65729c6A135fa9
    npm run dev
    ```
 
-4. **Connect Wallet** (OnchainKit component)
-   - Click "Connect Wallet" button
-   - **Emphasize**: "This is from OnchainKit - we didn't build this!"
+4. **Open browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-5. **Enter Recipients**
+
+5. **Connect Wallet** (OnchainKit component)
+   - Click "Connect Wallet" button
+   -This is from OnchainKit
+
+6. **Enter Recipients**
    - 3 input fields for addresses
    - Amount input (split equally)
 
-6. **Execute Split Payment**
+7. **Execute Split Payment**
    - Click "Split Payment" button
    - **ONE confirmation popup** 
    - See transaction on BaseScan
 
-7. **Verify Results**
+8. **Verify Results**
    - Check all 3 recipients received funds
    - See it's ONE transaction hash
 
 
-"Notice how we didn't need to deploy a contract? That's because Base Accounts ARE smart wallets (ERC-4337). Day 4 we'll explore:"
+Notice how we didn't need to deploy a contract? That's because Base Accounts ARE smart wallets (ERC-4337). 
+
+Day 4 we'll explore:
 - Sub-accounts (app-specific wallets)
 - Multi-owner accounts
 - Session keys
@@ -153,7 +162,6 @@ https://app.fuul.xyz/landing/coinbase-cdp?referrer=0x4dc7f61e7B7Ea65729c6A135fa9
 #### Bridge to Paymaster/Gasless UX
 
 ```tsx
-// Show this config (don't implement yet)
 const sdk = createBaseAccountSDK({
   appName: 'Split Payment Demo',
   appChainIds: [base.constants.CHAIN_IDS.baseSepolia],
@@ -163,46 +171,8 @@ const sdk = createBaseAccountSDK({
 });
 ```
 
-**Explain**: "See this `paymasterUrls` config? Tomorrow we'll add this ONE line and users won't pay gas fees!"
+See this `paymasterUrls` config? Day 4 we'll add this ONE line and users won't pay gas fees!
 
-
-
-### Prerequisites
-- Node.js 18+ installed
-- Coinbase Wallet or compatible Web3 wallet
-- Base Sepolia testnet ETH (get from [Base Faucet](https://www.coinbase.com/faucets/base-ethereum-goerli-faucet))
-- OnchainKit API key (get from [Coinbase Developer Platform](https://portal.cdp.coinbase.com/products/onchainkit))
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone [your-repo-url]
-   cd SplitPayment
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Setup environment variables**
-   ```bash
-   cp .env.example .env
-   ```
-
-   Edit `.env` and add your OnchainKit API key:
-   ```
-   NEXT_PUBLIC_ONCHAINKIT_API_KEY=your_api_key_here
-   ```
-
-4. **Run development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## File Structure
 
@@ -216,52 +186,6 @@ app/
       └── SplitPayment.module.css # Component styles
 ```
 
-## How to Use the App
-
-1. **Connect Wallet**: Click the wallet button in the header
-2. **Get Test ETH**: Visit [Base Faucet](https://www.coinbase.com/faucets/base-ethereum-goerli-faucet)
-3. **Enter Recipients**: Add 3 Ethereum addresses
-4. **Set Amount**: Choose amount per recipient (default: 0.001 ETH)
-5. **Split Payment**: Click button and approve in wallet
-6. **View Transaction**: Click BaseScan link to see all 3 transfers
-
-## Technical Details
-
-### Dependencies
-- `@base-org/account`: Base Account SDK for batch transactions
-- `@coinbase/onchainkit`: Wallet connection and UI components
-- `wagmi`: React hooks for Ethereum
-- `viem`: TypeScript utilities for Ethereum
-- `next`: React framework
-
-### Key Features
-
-#### Batch Transactions (`wallet_sendCalls`)
-- Implements EIP-5792 standard
-- Multiple operations in single transaction
-- Atomic execution (all succeed or all fail)
-
-#### OnchainKit Integration
-- Pre-configured Wagmi and Viem
-- Beautiful wallet connection UI
-- Base Sepolia testnet ready
-
-#### Error Handling
-- User rejection detection
-- Insufficient balance checking
-- Clear error messages
-
-## Common Issues
-
-### Transaction Fails
-- **Check balance**: Ensure you have enough ETH for total amount + gas
-- **Verify addresses**: All recipient addresses must be valid Ethereum addresses
-- **Network**: Confirm you're connected to Base Sepolia
-
-### Wallet Won't Connect
-- **Update wallet**: Ensure Coinbase Wallet is up to date
-- **Clear cache**: Try clearing browser cache and reconnecting
-- **Check network**: Add Base Sepolia to your wallet if needed
 
 ## Resources
 
@@ -271,10 +195,6 @@ app/
 - [OnchainKit](https://docs.base.org/onchainkit)
 - [EIP-5792 Specification](https://eips.ethereum.org/EIPS/eip-5792)
 
-### Tools
-- [Base Sepolia Faucet](https://www.coinbase.com/faucets/base-ethereum-goerli-faucet)
-- [BaseScan (Sepolia)](https://sepolia.basescan.org/)
-- [Coinbase Developer Platform](https://portal.cdp.coinbase.com/)
 
 ## Next Steps
 
@@ -283,15 +203,15 @@ app/
 2. **Sub-accounts**: Create app-specific accounts
 3. **Session Keys**: Allow limited permissions without full wallet access
 
-### Challenge Ideas
+### Challenge Ideas(You can contribute to this repo as part of learning!)
 - Add ERC-20 token support to batch transfers
 - Implement "split by percentage" instead of equal amounts
 - Add address book for frequent recipients
-- Create recurring payment schedules
+- Create recurring payment schedules(https://docs.base.org/base-account/guides/accept-recurring-payments)
 
 ## Contributing
 
-This is a workshop demo. Feel free to:
+Feel free to:
 - Add features and experiment
 - Report issues or improvements
 - Share your implementations
