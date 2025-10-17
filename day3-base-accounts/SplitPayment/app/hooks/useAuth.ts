@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createBaseAccountSDK, base } from "@base-org/account";
+import { provider } from "@/lib/baseAccount";
 import { numberToHex } from "viem";
+import { base } from "@base-org/account";
 
 /**
  * useAuth Hook
@@ -39,15 +40,6 @@ export function useAuth() {
     isLoading: true,
     error: null,
   });
-
-  // Initialize SDK
-  const sdk = createBaseAccountSDK({
-    appName: "Split Payment Demo",
-    appLogoUrl: "https://base.org/favicon.ico",
-    appChainIds: [base.constants.CHAIN_IDS.baseSepolia],
-  });
-
-  const provider = sdk.getProvider();
 
   // Check for existing session on mount
   useEffect(() => {

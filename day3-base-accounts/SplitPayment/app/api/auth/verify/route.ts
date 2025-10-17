@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createPublicClient, http } from 'viem';
 import { baseSepolia } from 'viem/chains';
 import crypto from 'crypto';
+import { consumeNonce } from '@/lib/auth';
 
 /**
  * Signature Verification API Route
@@ -59,11 +60,13 @@ export async function POST(request: Request) {
     }
 
     console.log('[Auth] Verifying signature for address:', address);
+    console.log('[Auth] Message:', message);
 
     // 1. Extract nonce from message
     // SIWE message format includes "Nonce: <value>"
-    const nonceMatch = message.match(/Nonce: ([a-f0-9]+)/);
+    const nonceMatch = message.match(/Nonce: ([a-f0-9]+)/i);
     if (!nonceMatch) {
+      console.error('[Auth] No nonce found in message');
       return NextResponse.json(
         { error: 'Invalid message format: nonce not found' },
         { status: 400 }
@@ -73,12 +76,11 @@ export async function POST(request: Request) {
     const nonce = nonceMatch[1];
     console.log('[Auth] Extracted nonce:', nonce);
 
-    // 2. Verify and consume nonce
-    // Import consumeNonce function from nonce route
-    const { consumeNonce } = await import('../nonce/route');
+    // 2. Verify and consume nonce from shared store
     const nonceValid = consumeNonce(nonce);
 
     if (!nonceValid) {
+      console.error('[Auth] Invalid or reused nonce:', nonce);
       return NextResponse.json(
         { error: 'Invalid, expired, or reused nonce' },
         { status: 401 }
