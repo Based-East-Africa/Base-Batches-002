@@ -56,7 +56,7 @@ export function UserDataConsent({ onToggle, enabled }: UserDataConsentProps) {
               margin: 0,
             }}
           >
-            📧 Collect User Information
+            Collect User Information
           </label>
         </div>
 
@@ -76,7 +76,7 @@ export function UserDataConsent({ onToggle, enabled }: UserDataConsentProps) {
             </ul>
 
             <p style={{ margin: "0.75rem 0 0 0", fontSize: "0.8rem", color: "#666", fontStyle: "italic" }}>
-              💡 You&apos;ll be prompted in your wallet to provide this information. You can decline optional fields.
+               You&apos;ll be prompted in your wallet to provide this information. You can decline optional fields.
             </p>
           </div>
         )}

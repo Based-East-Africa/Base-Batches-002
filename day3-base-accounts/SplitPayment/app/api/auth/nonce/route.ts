@@ -8,7 +8,7 @@ import { addNonce } from '@/lib/auth';
  * Purpose: Generate unique, one-time-use nonces for Sign in with Base authentication
  *
  * Security:
- * - Each nonce expires after 5 minutes
+ * - Each nonce expires after 10 minutes
  * - Can only be used once (consumed during verification)
  * - Prevents replay attacks
  */

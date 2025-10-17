@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { provider } from "@/lib/baseAccount";
+import { getProvider } from "@/lib/baseAccount";
 import { numberToHex } from "viem";
 import { base } from "@base-org/account";
 
@@ -19,9 +19,11 @@ import { base } from "@base-org/account";
  * Flow:
  * 1. User clicks "Sign in with Base"
  * 2. Fetch nonce from server
- * 3. Request wallet signature with signInWithEthereum capability
- * 4. Verify signature on server
- * 5. Store session token
+ * 3. Get provider instance from SDK
+ * 4. Switch to Base Sepolia
+ * 5. Request wallet signature with signInWithEthereum capability
+ * 6. Verify signature on server
+ * 7. Store session token
  */
 
 interface AuthState {
@@ -96,7 +98,10 @@ export function useAuth() {
       const { nonce } = await nonceResponse.json();
       console.log("[useAuth] Received nonce:", nonce);
 
-      // 2. Switch to Base Sepolia
+      // 2. Get provider instance
+      const provider = getProvider();
+
+      // 3. Switch to Base Sepolia
       try {
         await provider.request({
           method: "wallet_switchEthereumChain",
@@ -107,7 +112,7 @@ export function useAuth() {
         console.warn("[useAuth] Chain switch:", switchError.message);
       }
 
-      // 3. Connect wallet with signInWithEthereum capability
+      // 4. Connect wallet with signInWithEthereum capability
       const result = await provider.request({
         method: "wallet_connect",
         params: [
@@ -142,7 +147,7 @@ export function useAuth() {
 
       console.log("[useAuth] Got signature for address:", address);
 
-      // 4. Verify signature on backend
+      // 5. Verify signature on backend
       const verifyResponse = await fetch("/api/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -158,7 +163,7 @@ export function useAuth() {
 
       console.log("[useAuth] Authentication successful!");
 
-      // 5. Store session
+      // 6. Store session
       localStorage.setItem("sessionToken", sessionToken);
       localStorage.setItem("userAddress", address);
 

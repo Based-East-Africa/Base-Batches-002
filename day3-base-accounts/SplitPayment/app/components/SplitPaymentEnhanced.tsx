@@ -12,11 +12,11 @@ import { GasPaymentToggle } from "./GasPaymentToggle";
  * Enhanced SplitPayment Component
  *
  * Features:
- * 1. ✅ Batch Transactions - Multiple transfers in one transaction
- * 2. 🆕 User Authentication - Sign in with Base (SIWE)
- * 3. 🆕 Data Collection - Email (required) + Phone (optional)
- * 4. 🆕 ERC-20 Gas Payments - Pay gas in USDC instead of ETH
- * 5. 🔄 Dual Wallet Support - Coinbase Smart Wallet (batch) + MetaMask (fallback)
+ * 1. Batch Transactions - Multiple transfers in one transaction
+ * 2. User Authentication - Sign in with Base (SIWE)
+ * 3. Data Collection - Email (required) + Phone (optional)
+ * 4. ERC-20 Gas Payments - Pay gas in USDC instead of ETH
+ * 5. Dual Wallet Support - Coinbase Smart Wallet (batch) + MetaMask (fallback)
  *
  * Technical Implementation:
  * - Base Account SDK for batch transactions
@@ -28,7 +28,7 @@ import { GasPaymentToggle } from "./GasPaymentToggle";
 // USDC token address on Base Sepolia
 const USDC_ADDRESS = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
 
-// Paymaster URL (replace with your actual paymaster)
+// 
 // Get from: https://portal.cdp.coinbase.com
 const PAYMASTER_URL = process.env.NEXT_PUBLIC_PAYMASTER_URL || "";
 
@@ -147,6 +147,8 @@ export function SplitPaymentEnhanced({ userAddress }: SplitPaymentEnhancedProps)
       ],
     });
 
+    console.log("[SplitPayment] wallet_sendCalls result:", result);
+
     // Extract collected data if available
     if (collectData && (result as any).payerInfoResponses) {
       const data = (result as any).payerInfoResponses;
@@ -258,7 +260,33 @@ export function SplitPaymentEnhanced({ userAddress }: SplitPaymentEnhancedProps)
 
           const result = await executeBatchWithSDK(calls);
 
-          const hash = (result as { hash?: string })?.hash || (result as string);
+          console.log("[SplitPayment] Raw result:", result);
+          console.log("[SplitPayment] Result type:", typeof result);
+
+          // wallet_sendCalls returns a string (bundle ID or transaction hash)
+          let hash: string = "";
+
+          if (typeof result === "string") {
+            // Direct string response
+            hash = result;
+          } else if (result && typeof result === "object") {
+            const resultObj = result as Record<string, unknown>;
+            // Try various possible property names
+            hash = (resultObj.hash as string) ||
+                   (resultObj.txHash as string) ||
+                   (resultObj.transactionHash as string) ||
+                   "";
+          }
+
+          // If no hash but we got here, transaction was signed and submitted
+          if (!hash || hash.length === 0) {
+            console.log("[SplitPayment] Transaction submitted but hash not in response (normal with capabilities)");
+            // Check your wallet for the transaction!
+            hash = "check-wallet";
+          } else {
+            console.log("[SplitPayment] Extracted hash:", hash);
+          }
+
           setTxHash(hash);
           setStatus("success");
           setUsedBatchMode(true);
@@ -339,7 +367,7 @@ export function SplitPaymentEnhanced({ userAddress }: SplitPaymentEnhancedProps)
               fontSize: "0.9rem",
             }}
           >
-            ✅ <strong>Coinbase Smart Wallet!</strong> All features available
+             <strong>Coinbase Smart Wallet!</strong> All features available
           </div>
         ) : (
           <div
@@ -408,10 +436,10 @@ export function SplitPaymentEnhanced({ userAddress }: SplitPaymentEnhancedProps)
             />
           </div>
 
-          {/* NEW FEATURE: User Data Collection */}
+          {/*  User Data Collection */}
           <UserDataConsent enabled={collectData} onToggle={setCollectData} />
 
-          {/* NEW FEATURE: ERC-20 Gas Payment */}
+          {/*  ERC-20 Gas Payment */}
           <GasPaymentToggle
             enabled={payWithUSDC}
             onToggle={setPayWithUSDC}
@@ -427,7 +455,7 @@ export function SplitPaymentEnhanced({ userAddress }: SplitPaymentEnhancedProps)
             {status === "pending" ? "Processing..." : "Split Payment"}
           </button>
 
-          {/* Success Display with Enhanced Info */}
+          {/* Success Display  */}
           {status === "success" && txHash && (
             <div className={styles.success}>
               <p className={styles.statusTitle}>Transaction Successful! 🎉</p>
@@ -454,7 +482,7 @@ export function SplitPaymentEnhanced({ userAddress }: SplitPaymentEnhancedProps)
                   }}
                 >
                   <p style={{ margin: "0 0 0.5rem 0", fontWeight: 600, fontSize: "0.9rem" }}>
-                    📧 Collected Information:
+                    Collected Information:
                   </p>
                   {collectedData.email && (
                     <p style={{ margin: "0.25rem 0", fontSize: "0.85rem" }}>
@@ -470,14 +498,21 @@ export function SplitPaymentEnhanced({ userAddress }: SplitPaymentEnhancedProps)
                 </div>
               )}
 
-              <a
-                href={`https://sepolia.basescan.org/tx/${txHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.link}
-              >
-                View on BaseScan
-              </a>
+              {/* Transaction Hash Link */}
+              {txHash && txHash !== "check-wallet" && txHash.startsWith("0x") ? (
+                <a
+                  href={`https://sepolia.basescan.org/tx/${txHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.link}
+                >
+                  View on BaseScan
+                </a>
+              ) : (
+                <p className={styles.statusText} style={{ marginTop: "0.75rem", fontSize: "0.9rem" }}>
+                  ℹ️ Check your wallet&apos;s activity history for the transaction details
+                </p>
+              )}
             </div>
           )}
 

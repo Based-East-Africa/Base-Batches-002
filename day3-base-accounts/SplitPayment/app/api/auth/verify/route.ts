@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createPublicClient, http } from 'viem';
 import { baseSepolia } from 'viem/chains';
 import crypto from 'crypto';
-import { consumeNonce } from '@/lib/auth';
+import { verifyNonce, consumeNonce } from '@/lib/auth';
 
 /**
  * Signature Verification API Route
@@ -11,13 +11,15 @@ import { consumeNonce } from '@/lib/auth';
  *
  * Flow:
  * 1. Extract nonce from signed message
- * 2. Verify nonce is valid and unused
+ * 2. Verify nonce is valid and unused (non-destructive check)
  * 3. Verify signature using viem (supports ERC-6492 for undeployed wallets)
- * 4. Create session token
- * 5. Return session to client
+ * 4. Consume nonce (only after successful verification)
+ * 5. Create session token
+ * 6. Return session to client
  *
  * Security:
  * - Nonces can only be used once
+ * - Nonces consumed only after signature verification succeeds
  * - Signatures are verified on-chain
  * - ERC-6492 support for smart wallets
  * - Session tokens stored securely
@@ -76,8 +78,8 @@ export async function POST(request: Request) {
     const nonce = nonceMatch[1];
     console.log('[Auth] Extracted nonce:', nonce);
 
-    // 2. Verify and consume nonce from shared store
-    const nonceValid = consumeNonce(nonce);
+    // 2. Verify nonce exists (don't consume yet!)
+    const nonceValid = verifyNonce(nonce);
 
     if (!nonceValid) {
       console.error('[Auth] Invalid or reused nonce:', nonce);
@@ -89,6 +91,7 @@ export async function POST(request: Request) {
 
     // 3. Verify signature using viem
     // This supports ERC-6492 for undeployed smart wallets
+    console.log('[Auth] Verifying signature...');
     let isValid = false;
     try {
       isValid = await publicClient.verifyMessage({
@@ -104,6 +107,8 @@ export async function POST(request: Request) {
       );
     }
 
+    console.log('[Auth] Signature valid:', isValid);
+
     if (!isValid) {
       return NextResponse.json(
         { error: 'Invalid signature' },
@@ -113,7 +118,11 @@ export async function POST(request: Request) {
 
     console.log('[Auth] Signature valid for:', address);
 
-    // 4. Create session token
+    // 4. Consume nonce now that signature is verified
+    consumeNonce(nonce);
+    console.log('[Auth] Nonce consumed after successful verification');
+
+    // 5. Create session token
     const sessionToken = crypto.randomBytes(32).toString('hex');
     const now = Date.now();
     const sevenDays = 7 * 24 * 60 * 60 * 1000;
@@ -126,7 +135,7 @@ export async function POST(request: Request) {
 
     console.log('[Auth] Session created for:', address);
 
-    // 5. Return session token
+    // 6. Return session token
     return NextResponse.json({
       sessionToken,
       address,

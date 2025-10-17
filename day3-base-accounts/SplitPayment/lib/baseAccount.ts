@@ -1,22 +1,27 @@
+'use client';
+
 import { createBaseAccountSDK, base } from '@base-org/account';
 
 /**
  * Base Account SDK Singleton
  *
- * Initialize SDK once outside React components to avoid:
- * - Rehydration errors
- * - Multiple SDK instances
- * - React strict mode issues
+ * Client-side only SDK initialization to avoid SSR issues
  */
 
-// Initialize SDK once (singleton pattern)
-export const sdk = createBaseAccountSDK({
-  appName: "Split Payment Demo",
-  appLogoUrl: "https://base.org/favicon.ico",
-  appChainIds: [base.constants.CHAIN_IDS.baseSepolia],
-});
+let sdkInstance: ReturnType<typeof createBaseAccountSDK> | null = null;
 
-// Get provider instance
-export const provider = sdk.getProvider();
+export function getSDK() {
+  if (!sdkInstance) {
+    sdkInstance = createBaseAccountSDK({
+      appName: "Split Payment Demo",
+      appLogoUrl: "https://base.org/favicon.ico",
+      appChainIds: [base.constants.CHAIN_IDS.baseSepolia],
+    });
+    console.log('[SDK] Base Account SDK initialized');
+  }
+  return sdkInstance;
+}
 
-console.log('[SDK] Base Account SDK initialized');
+export function getProvider() {
+  return getSDK().getProvider();
+}
