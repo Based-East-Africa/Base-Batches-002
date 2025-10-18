@@ -1,6 +1,6 @@
-# OnchainKit MiniApp Template
+# Paymaster Demo - Gasless Transactions on Base
 
-A Next.js template bootstrapped with [`create-onchain`](https://www.npmjs.com/package/create-onchain) and configured for building Farcaster mini apps with OnchainKit and Base network integration.
+A minimalistic, professional demo application showcasing gasless transactions using Coinbase's Paymaster service on Base blockchain. Built with OnchainKit and Base's official design system.
 
 ## Table of Contents
 
@@ -15,134 +15,170 @@ A Next.js template bootstrapped with [`create-onchain`](https://www.npmjs.com/pa
 
 ## Overview
 
-This template provides a pre-configured development environment for building onchain applications with OnchainKit, specifically optimized for Farcaster mini apps. It includes wallet connectivity, transaction handling, and mini app SDK integration out of the box.
+This application demonstrates how to implement gasless transactions using Coinbase's Paymaster service on the Base blockchain. Users can send transactions without paying gas fees, dramatically improving the onboarding experience for web3 applications.
+
+The UI follows Base's official design system with a minimalistic, professional aesthetic using their official color palette (blue, white, black, and grays).
 
 ## Features
 
-- **Next.js 15** with App Router
-- **OnchainKit** for onchain components (Wallet, Transaction, Swap, Checkout, Identity)
-- **MiniKit SDK** for Farcaster mini app integration
-- **Wagmi & Viem** for Ethereum interactions
-- **Base Network** configuration
-- **TypeScript** for type safety
-- **Quick Auth** for user authentication (optional)
-- **React Query** for data fetching and caching
+- **Gasless Transactions**: Send transactions without ETH for gas fees
+- **Paymaster Integration**: Coinbase Developer Platform paymaster service
+- **Base Official Design**: Clean UI with Base's official colors (#0000ff, #3c8aff)
+- **OnchainKit Components**: Wallet connectivity and transaction handling
+- **MiniKit SDK**: Farcaster mini app compatible
+- **TypeScript**: Fully typed for type safety and maintainability
+- **Responsive Design**: Mobile-first, works on all devices
+- **Dark/Light Mode**: Automatic theme switching
+- **Clean Architecture**: Modular, maintainable code structure
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+ installed
-- npm, yarn, pnpm, or bun package manager
-- A [Coinbase Developer Platform API key](https://portal.cdp.coinbase.com/products/onchainkit) (optional but recommended)
+- A Coinbase Developer Platform account
+- Base Sepolia testnet ETH (for testing)
 
 ### Installation
 
-1. Clone the repository:
+1. Navigate to the project:
 
 ```bash
-git clone <your-repo-url>
-cd minidemo
+cd day2-Onchainkit-WalletInfra/minidemo
 ```
 
 2. Install dependencies:
 
 ```bash
 npm install
-# or
-yarn install
-# or
-pnpm install
-# or
-bun install
 ```
 
 3. Configure environment variables:
 
-Create a `.env` file in the root directory (or update the existing one):
+Update the `.env` file with your API keys:
 
 ```env
-NEXT_PUBLIC_PROJECT_NAME="your-project-name"
-NEXT_PUBLIC_ONCHAINKIT_API_KEY="your-api-key-here"
-NEXT_PUBLIC_URL="your-deployment-url"
+NEXT_PUBLIC_PROJECT_NAME="minidemo"
+NEXT_PUBLIC_ONCHAINKIT_API_KEY="your-onchainkit-api-key"
+NEXT_PUBLIC_CHAIN="testnet"
+NEXT_PUBLIC_PAYMASTER_URL="https://api.developer.coinbase.com/rpc/v1/base-sepolia/YOUR_PAYMASTER_API_KEY"
 ```
 
-4. Run the development server:
+### Getting API Keys
+
+#### OnchainKit API Key
+1. Visit [Coinbase Developer Platform](https://portal.cdp.coinbase.com/)
+2. Create a new project or select existing one
+3. Navigate to API Keys section
+4. Copy your OnchainKit API key
+
+#### Paymaster URL
+1. Go to [Coinbase Bundler & Paymaster](https://portal.cdp.coinbase.com/products/bundler-and-paymaster)
+2. Create a new paymaster configuration
+3. Select Base Sepolia network
+4. Copy the provided paymaster URL
+5. Add it to your `.env` file
+
+### Running the Application
+
+Development mode:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) to view your app.
+Production build:
+
+```bash
+npm run build
+npm start
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Project Structure
 
 ```
 minidemo/
 ├── app/
+│   ├── components/
+│   │   ├── PaymasterDemo.tsx          # Main paymaster demo component
+│   │   └── PaymasterDemo.module.css   # Component styles
 │   ├── api/
 │   │   └── auth/
-│   │       └── route.ts          # Authentication API endpoint
-│   ├── .well-known/
-│   │   └── farcaster.json/
-│   │       └── route.ts          # Farcaster app manifest
-│   ├── globals.css               # Global styles
-│   ├── layout.tsx                # Root layout component
-│   ├── page.tsx                  # Main page component
-│   ├── page.module.css           # Page-specific styles
-│   └── rootProvider.tsx          # OnchainKit provider configuration
-├── public/                       # Static assets
-├── .env                          # Environment variables
-├── minikit.config.ts             # MiniKit configuration
-├── next.config.ts                # Next.js configuration
-├── package.json                  # Project dependencies
-├── tsconfig.json                 # TypeScript configuration
-└── README.md                     # This file
+│   │       └── route.ts               # Quick Auth endpoint
+│   ├── globals.css                    # Base color system & global styles
+│   ├── layout.tsx                     # Root layout
+│   ├── page.tsx                       # Home page
+│   ├── page.module.css               # Page styles
+│   └── rootProvider.tsx              # OnchainKit provider config
+├── public/                            # Static assets
+├── .env                              # Environment variables
+└── package.json                      # Dependencies
 ```
 
 ## Configuration
 
-### OnchainKit Provider
+### Paymaster Integration
 
-The OnchainKit provider is configured in `app/rootProvider.tsx`. You can customize:
-
-- **Chain**: Currently set to Base (`base`)
-- **Appearance**: Theme mode (auto, light, dark)
-- **Wallet**: Display type and preferences
-- **MiniKit**: Enable/disable mini app features
+The paymaster is configured in [app/rootProvider.tsx](app/rootProvider.tsx):
 
 ```typescript
 <OnchainKitProvider
   apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
-  chain={base}
+  chain={chain}
+  paymasterUrl={process.env.NEXT_PUBLIC_PAYMASTER_URL}
   config={{
-    appearance: {
-      mode: "auto",
-    },
-    wallet: {
-      display: "modal",
-      preference: "all",
-    },
-  }}
-  miniKit={{
-    enabled: true,
-    autoConnect: true,
-    notificationProxyUrl: undefined,
+    appearance: { mode: "auto" },
+    wallet: { display: "modal", preference: "all" }
   }}
 >
   {children}
 </OnchainKitProvider>
 ```
 
-### MiniKit Configuration
+### Design System
 
-MiniKit settings are defined in `minikit.config.ts` for Farcaster mini app integration.
+Base's official colors are defined in [app/globals.css](app/globals.css):
+
+```css
+:root {
+  --base-blue: #0000ff;        /* Primary brand color */
+  --base-cerulean: #3c8aff;    /* Hover states */
+  --base-white: #ffffff;       /* Backgrounds */
+  --base-gray-100: #0a0b0d;    /* Text (dark mode bg) */
+  --base-green: #66c800;       /* Success states */
+  --base-red: #fc401f;         /* Error states */
+}
+```
+
+## How It Works
+
+### Paymaster Flow
+
+1. **Provider Configuration**: OnchainKit provider configured with paymaster URL
+2. **Transaction Creation**: User initiates a transaction via UI
+3. **Paymaster Service**: Transaction routed through paymaster
+4. **Gas Sponsorship**: Paymaster covers gas fees automatically
+5. **Confirmation**: Transaction executes without user paying gas
+
+### Transaction Implementation
+
+```typescript
+const callsId = await provider.request({
+  method: "wallet_sendCalls",
+  params: [{
+    version: "2.0",
+    from: userAddress,
+    calls: [...],
+    capabilities: {
+      paymasterService: {
+        url: process.env.NEXT_PUBLIC_PAYMASTER_URL
+      }
+    }
+  }]
+});
+```
 
 ## Contributing
 
@@ -299,8 +335,65 @@ If you find a bug or have a suggestion:
 
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
-- `npm run start` - Start production server
+- `npm start` - Start production server
 - `npm run lint` - Run ESLint
+
+## Usage
+
+### Send Gasless Transaction
+
+1. Connect your wallet using the Wallet button in the header
+2. Click "Send Sponsored Transaction" button
+3. Approve the transaction in your wallet
+4. Transaction executes without gas fees
+
+### Transfer Tokens (Gasless)
+
+1. Ensure your wallet is connected
+2. Click "Transfer Tokens (Gasless)" button
+3. Confirm in your wallet
+4. Token transfer completes without paying gas
+
+## Customization
+
+### Update Transaction Logic
+
+Edit [app/components/PaymasterDemo.tsx](app/components/PaymasterDemo.tsx):
+
+```typescript
+const calls: Call[] = [
+  {
+    to: "0xYourContractAddress",
+    data: "0xYourEncodedFunctionData",
+    value: "0x0",
+  },
+];
+```
+
+### Modify Styling
+
+Update colors in [app/globals.css](app/globals.css) or component styles in [app/components/PaymasterDemo.module.css](app/components/PaymasterDemo.module.css).
+
+## Troubleshooting
+
+### Paymaster Not Working
+
+- Verify paymaster URL is correct in `.env`
+- Check you have sufficient credits in Coinbase Developer Platform
+- Ensure you're on Base Sepolia network
+
+### Transaction Failing
+
+- Confirm wallet is connected
+- Verify contract address and data encoding
+- Check browser console for error messages
+
+## Resources
+
+- [Base Documentation](https://docs.base.org)
+- [OnchainKit Docs](https://onchainkit.xyz)
+- [Coinbase Paymaster Guide](https://docs.cdp.coinbase.com/paymaster/docs/welcome)
+- [Base Account SDK](https://docs.base.org/base-account)
 
 ## What You Can Build
 

@@ -1,14 +1,20 @@
 "use client";
 import { ReactNode } from "react";
-import { base } from "wagmi/chains";
+import { base, baseSepolia } from "wagmi/chains";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
 import "@coinbase/onchainkit/styles.css";
 
 export function RootProvider({ children }: { children: ReactNode }) {
+  // Determine which chain to use based on environment
+  const chain = process.env.NEXT_PUBLIC_CHAIN === "mainnet" ? base : baseSepolia;
+
+  // Paymaster URL configuration
+  const paymasterUrl = process.env.NEXT_PUBLIC_PAYMASTER_URL;
+
   return (
     <OnchainKitProvider
       apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
-      chain={base}
+      chain={chain}
       config={{
         appearance: {
           mode: "auto",
@@ -23,6 +29,7 @@ export function RootProvider({ children }: { children: ReactNode }) {
         autoConnect: true,
         notificationProxyUrl: undefined,
       }}
+      paymasterUrl={paymasterUrl}
     >
       {children}
     </OnchainKitProvider>

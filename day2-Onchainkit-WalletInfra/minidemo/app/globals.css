@@ -1,13 +1,41 @@
 @layer base {
   :root {
-    --background: #ffffff;
-    --foreground: #171717;
+    /* Base Official Colors */
+    --base-blue: #0000ff;
+    --base-cerulean: #3c8aff;
+    --base-white: #ffffff;
+    --base-gray-0: #ffffff;
+    --base-gray-10: #eef0f3;
+    --base-gray-15: #dee1e7;
+    --base-gray-30: #b1b7c3;
+    --base-gray-50: #717886;
+    --base-gray-60: #5b616e;
+    --base-gray-80: #32353d;
+    --base-gray-100: #0a0b0d;
+    --base-green: #66c800;
+    --base-red: #fc401f;
+
+    /* Theme Variables - Light Mode */
+    --background: var(--base-white);
+    --foreground: var(--base-gray-100);
+    --primary: var(--base-blue);
+    --primary-hover: var(--base-cerulean);
+    --secondary: var(--base-gray-10);
+    --border: var(--base-gray-15);
+    --text-secondary: var(--base-gray-50);
+    --success: var(--base-green);
+    --error: var(--base-red);
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --background: #0a0a0a;
-      --foreground: #ededed;
+      --background: var(--base-gray-100);
+      --foreground: var(--base-white);
+      --primary: var(--base-cerulean);
+      --primary-hover: var(--base-blue);
+      --secondary: var(--base-gray-80);
+      --border: var(--base-gray-60);
+      --text-secondary: var(--base-gray-30);
     }
   }
 
@@ -23,22 +51,16 @@
     font-family: var(--font-inter), sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   code {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: var(--secondary);
     border-radius: 6px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border);
     font-family: var(--font-source-code-pro), monospace;
     font-size: 0.875rem;
-    padding: 0.25rem 0.5rem calc(0.25rem + 2px);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    code {
-      background-color: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
+    padding: 0.25rem 0.5rem;
   }
 
   * {
@@ -56,5 +78,17 @@
     html {
       color-scheme: dark;
     }
+  }
+
+  /* Button Styles */
+  button {
+    font-family: var(--font-inter), sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 }
