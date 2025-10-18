@@ -1,0 +1,447 @@
+/* Container */
+.container {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Main Card - Premium Glass Effect */
+.mainCard {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mainCard:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 255, 0.04);
+  border-color: var(--primary);
+}
+
+/* Transaction Type Selector */
+.typeSelector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  padding: 0.5rem;
+  background: var(--secondary);
+  border-radius: 16px;
+}
+
+.typeButton {
+  background: transparent;
+  border: none;
+  padding: 1rem 0.75rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.typeButton:hover {
+  background: var(--background);
+}
+
+.typeButton.active {
+  background: var(--primary);
+  color: var(--base-white);
+  box-shadow: 0 4px 12px rgba(0, 0, 255, 0.2);
+}
+
+.typeIcon {
+  font-size: 1.5rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.typeLabel {
+  font-size: 0.813rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Form Section */
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+}
+
+.formInput {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: var(--secondary);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 0.938rem;
+  color: var(--foreground);
+  font-family: var(--font-inter), sans-serif;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+.formInput:focus {
+  border-color: var(--primary);
+  background: var(--background);
+  box-shadow: 0 0 0 3px rgba(0, 0, 255, 0.05);
+}
+
+.formInput::placeholder {
+  color: var(--text-secondary);
+}
+
+.formInput.inputError {
+  border-color: var(--error);
+}
+
+.errorText {
+  font-size: 0.813rem;
+  color: var(--error);
+  font-weight: 500;
+}
+
+/* Submit Button */
+.submitButton {
+  width: 100%;
+  padding: 1.125rem 1.5rem;
+  background: var(--primary);
+  color: var(--base-white);
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 0, 255, 0.25);
+}
+
+.submitButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.arrowIcon {
+  font-size: 1.25rem;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.submitButton:hover:not(:disabled) .arrowIcon {
+  transform: translateX(3px);
+}
+
+/* Loading Spinner */
+.loadingSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--base-white);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Status Messages */
+.statusMessage {
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  font-size: 0.938rem;
+  font-weight: 500;
+  line-height: 1.5;
+  border: 1.5px solid;
+  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.statusSuccess {
+  background: rgba(102, 200, 0, 0.08);
+  color: var(--success);
+  border-color: var(--success);
+}
+
+.statusError {
+  background: rgba(252, 64, 31, 0.08);
+  color: var(--error);
+  border-color: var(--error);
+}
+
+/* Transaction Result */
+.txResult {
+  padding: 1.25rem;
+  background: var(--secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.txLabel {
+  font-size: 0.813rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.txHash {
+  font-size: 0.938rem;
+  font-family: var(--font-source-code-pro), monospace;
+  padding: 0.75rem 1rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--foreground);
+}
+
+.explorerLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
+  background: var(--primary);
+  color: var(--base-white);
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.explorerLink:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 255, 0.2);
+}
+
+/* Wallet Info */
+.walletInfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  margin-top: 1rem;
+}
+
+.walletInfoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.walletInfoLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.walletInfoValue {
+  font-size: 0.938rem;
+  font-weight: 600;
+  color: var(--foreground);
+  font-family: var(--font-source-code-pro), monospace;
+}
+
+/* Connect Prompt */
+.connectPrompt {
+  text-align: center;
+  padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.connectIcon {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.connectTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.connectText {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 320px;
+  line-height: 1.6;
+}
+
+/* Info Panel */
+.infoPanel {
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.infoPanelHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.infoPanelIcon {
+  font-size: 1.25rem;
+  color: var(--primary);
+}
+
+.infoPanelTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.infoPanelText {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .mainCard {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+
+  .typeSelector {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .typeButton {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 1rem 1.25rem;
+  }
+
+  .typeIcon {
+    font-size: 1.25rem;
+  }
+
+  .typeLabel {
+    font-size: 0.875rem;
+  }
+
+  .walletInfo {
+    grid-template-columns: 1fr;
+  }
+
+  .formInput {
+    padding: 0.875rem 1rem;
+  }
+
+  .submitButton {
+    padding: 1rem 1.25rem;
+    font-size: 0.938rem;
+  }
+
+  .connectPrompt {
+    padding: 3rem 1.5rem;
+  }
+
+  .connectIcon {
+    font-size: 2.5rem;
+  }
+
+  .connectTitle {
+    font-size: 1.25rem;
+  }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .mainCard {
+    box-shadow: 0 1px 3px rgba(255, 255, 255, 0.02);
+  }
+
+  .mainCard:hover {
+    box-shadow: 0 8px 24px rgba(60, 138, 255, 0.1);
+  }
+
+  .typeButton.active {
+    box-shadow: 0 4px 12px rgba(60, 138, 255, 0.3);
+  }
+
+  .formInput:focus {
+    box-shadow: 0 0 0 3px rgba(60, 138, 255, 0.1);
+  }
+
+  .submitButton:hover:not(:disabled) {
+    box-shadow: 0 8px 20px rgba(60, 138, 255, 0.3);
+  }
+
+  .explorerLink:hover {
+    box-shadow: 0 4px 12px rgba(60, 138, 255, 0.3);
+  }
+}
