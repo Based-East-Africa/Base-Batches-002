@@ -1,50 +1,46 @@
 "use client";
 
-import { useAuth } from "../hooks/useAuth";
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { SplitPaymentEnhanced } from "./SplitPaymentEnhanced";
+import { ProfileDashboard } from "./ProfileDashboard";
+import { Identity, Avatar, Name, Badge } from '@coinbase/onchainkit/identity';
+import { base } from 'viem/chains';
 import styles from "./SplitPayment.module.css";
+
+// Coinbase Verified attestation schema ID
+const COINBASE_VERIFIED_SCHEMA_ID = "0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9";
 
 /**
  * AuthGate Component
  *
- * Purpose: Authentication gate for Split Payment app
+ * Purpose: Wallet connection gate for Split Payment app
  *
  * Flow:
- * 1. User sees "Sign in with Base" button
- * 2. Clicks → Base Account popup for signature
- * 3. After successful auth → Show Split Payment UI
- * 4. User can sign out anytime
+ * 1. User sees "Connect Wallet" button
+ * 2. Clicks → Wallet selection modal
+ * 3. After successful connection → Show Split Payment UI
+ * 4. User can disconnect anytime
  *
  * Features:
- * - Sign in with Ethereum (SIWE) authentication
- * - Session management with localStorage
- * - Auto-restore session on page load
- * - Sign out functionality
+ * - Wagmi-based wallet connection
+ * - Support for multiple wallets (Coinbase Wallet extension, injected wallets, smart wallets)
+ * - Automatic reconnection
+ * - Disconnect functionality
  */
 
 export function AuthGate() {
-  const { isAuthenticated, address, isLoading, error, signIn, signOut } = useAuth();
+  const { address, isConnected, isConnecting } = useAccount();
+  const { connect, connectors, error, isPending } = useConnect();
+  const { disconnect } = useDisconnect();
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.card}>
-          <h2 className={styles.title}>Split Payment</h2>
-          <p className={styles.connectPrompt}>Checking authentication...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Not authenticated - show sign in
-  if (!isAuthenticated) {
+  // Not connected - show wallet connection options
+  if (!isConnected) {
     return (
       <div className={styles.container}>
         <div className={styles.card}>
           <h2 className={styles.title}>Split Payment Demo</h2>
           <p className={styles.description} style={{ marginBottom: "2rem" }}>
-            Authenticate with your Base Account to access split payment features
+            Connect your wallet to access split payment features
           </p>
 
           <div
@@ -67,10 +63,10 @@ export function AuthGate() {
               }}
             >
               <h3 style={{ margin: "0 0 1rem 0", fontSize: "1.1rem", color: "#0052ff" }}>
-                🔐 Sign in with Base
+                🔐 Connect Your Wallet
               </h3>
               <p style={{ margin: "0 0 1rem 0", fontSize: "0.9rem", color: "#555" }}>
-                Authenticate using your wallet signature. No passwords required!
+                Choose your wallet to get started. Works with Coinbase Wallet, MetaMask, and more!
               </p>
               <ul
                 style={{
@@ -82,28 +78,36 @@ export function AuthGate() {
                   textAlign: "left",
                 }}
               >
-                <li style={{ marginBottom: "0.5rem" }}>✓ Secure wallet-based authentication</li>
-                <li style={{ marginBottom: "0.5rem" }}>✓ Works with smart wallets (ERC-6492)</li>
-                <li style={{ marginBottom: "0.5rem" }}>✓ Domain-bound signatures (EIP-4361)</li>
+                <li style={{ marginBottom: "0.5rem" }}>✓ Secure wallet-based connection</li>
+                <li style={{ marginBottom: "0.5rem" }}>✓ Works with browser extensions</li>
+                <li style={{ marginBottom: "0.5rem" }}>✓ Support for Basenames</li>
               </ul>
             </div>
 
-            <button
-              onClick={signIn}
-              className={styles.button}
-              style={{
-                minWidth: "200px",
-                background: "linear-gradient(135deg, #0052ff 0%, #0041cc 100%)",
-                boxShadow: "0 4px 12px rgba(0, 82, 255, 0.3)",
-              }}
-            >
-              Sign in with Base
-            </button>
+            {/* Wallet Connection Buttons */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", width: "100%", maxWidth: "300px" }}>
+              {connectors.map((connector) => (
+                <button
+                  key={connector.id}
+                  onClick={() => connect({ connector })}
+                  disabled={isConnecting || isPending}
+                  className={styles.button}
+                  style={{
+                    background: isConnecting ? "#ccc" : "linear-gradient(135deg, #0052ff 0%, #0041cc 100%)",
+                    boxShadow: "0 4px 12px rgba(0, 82, 255, 0.3)",
+                    opacity: isConnecting || isPending ? 0.6 : 1,
+                    cursor: isConnecting || isPending ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {isConnecting && isPending ? "Connecting..." : `Connect with ${connector.name}`}
+                </button>
+              ))}
+            </div>
 
             {error && (
               <div className={styles.error} style={{ maxWidth: "400px" }}>
-                <p className={styles.statusTitle}>Authentication Failed</p>
-                <p className={styles.statusText}>{error}</p>
+                <p className={styles.statusTitle}>Connection Failed</p>
+                <p className={styles.statusText}>{error.message}</p>
               </div>
             )}
 
@@ -117,14 +121,14 @@ export function AuthGate() {
               }}
             >
               <p style={{ margin: "0 0 0.5rem 0" }}>
-                <strong>New to Base Accounts?</strong>
+                <strong>New to Base?</strong>
               </p>
               <p style={{ margin: 0 }}>
-                Base Accounts are smart wallets that use passkeys for authentication. They enable
-                advanced features like batch transactions, gasless UX, and sub-accounts.
+                Base is a secure, low-cost Ethereum L2 built by Coinbase. Get your own Basename
+                to make your wallet address human-readable!
               </p>
               <a
-                href="https://docs.base.org/base-account"
+                href="https://www.base.org/names"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
@@ -143,10 +147,10 @@ export function AuthGate() {
     );
   }
 
-  // Authenticated - show split payment with sign out option
+  // Connected - show profile + split payment with disconnect option
   return (
     <div>
-      {/* Sign Out Header */}
+      {/* Disconnect Header with Identity */}
       <div
         style={{
           background: "#f9f9f9",
@@ -157,17 +161,41 @@ export function AuthGate() {
           alignItems: "center",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <span style={{ fontSize: "1.5rem" }}>👤</span>
-          <div>
-            <p style={{ margin: 0, fontSize: "0.85rem", color: "#666" }}>Signed in as</p>
-            <p style={{ margin: 0, fontFamily: "monospace", fontSize: "0.9rem", fontWeight: 600 }}>
-              {address?.slice(0, 6)}...{address?.slice(-4)}
-            </p>
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          {/* Use Identity components to show avatar + basename */}
+          <Identity
+            address={address as `0x${string}`}
+            chain={base}
+            schemaId={COINBASE_VERIFIED_SCHEMA_ID}
+          >
+            <Avatar
+              style={{
+                width: "48px",
+                height: "48px",
+                borderRadius: "50%",
+              }}
+            >
+              <Badge tooltip="Verified Account" />
+            </Avatar>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+              <p style={{ margin: 0, fontSize: "0.85rem", color: "#666" }}>Connected as</p>
+              <Name
+                style={{
+                  margin: 0,
+                  fontSize: "0.95rem",
+                  fontWeight: 600,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                }}
+              >
+                <Badge tooltip="Verified Account" />
+              </Name>
+            </div>
+          </Identity>
         </div>
         <button
-          onClick={signOut}
+          onClick={() => disconnect()}
           style={{
             padding: "0.5rem 1rem",
             background: "white",
@@ -187,9 +215,12 @@ export function AuthGate() {
             e.currentTarget.style.borderColor = "#ccc";
           }}
         >
-          Sign Out
+          Disconnect
         </button>
       </div>
+
+      {/* Profile Dashboard */}
+      <ProfileDashboard />
 
       {/* Main Split Payment UI */}
       <SplitPaymentEnhanced userAddress={address || ""} />
