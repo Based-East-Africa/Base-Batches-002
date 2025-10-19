@@ -11,8 +11,6 @@ const COINBASE_VERIFIED_SCHEMA_ID = "0xf8b05c79f090979bf4a80270aba232dff11a10d9c
 export function ProfileDashboard() {
   const { address, isConnected } = useAccount();
 
-  console.log('[ProfileDashboard] Rendering - isConnected:', isConnected, 'address:', address);
-
   // Don't render if not connected
   if (!isConnected || !address) {
     return null;
@@ -23,46 +21,27 @@ export function ProfileDashboard() {
       <div className={styles.card}>
         <h2 className={styles.title}>Your Profile</h2>
         <p className={styles.description}>
-          Your Base identity and Basename information
+          Your onchain identity on Base
         </p>
 
         <div className={styles.profileContent}>
-          {/* Debug info */}
-          <div style={{ padding: '1rem', background: '#f0f0f0', borderRadius: '8px', marginBottom: '1rem' }}>
-            <p style={{ margin: 0, fontSize: '0.875rem', color: '#333' }}>
-              <strong>Connected Address:</strong> {address}
-            </p>
-            <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.875rem', color: '#666' }}>
-              Identity components below should show your Basename if you have one set as primary on Base mainnet.
-            </p>
-          </div>
-
-          {/* Identity Component - OnchainKit will handle Basename resolution internally */}
-          <div style={{
-            padding: '1.5rem',
-            background: '#ffffff',
-            border: '2px solid #0052ff',
-            borderRadius: '12px'
-          }}>
+          {/* Identity Component */}
+          <div className={styles.identity}>
             <Identity
               address={address as `0x${string}`}
               chain={base}
               schemaId={COINBASE_VERIFIED_SCHEMA_ID}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                <Avatar style={{ width: '80px', height: '80px' }}>
+              <div className={styles.identityLayout}>
+                <Avatar className={styles.avatar}>
                   <Badge />
                 </Avatar>
 
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '1.25rem', fontWeight: '600', color: '#000', marginBottom: '0.5rem' }}>
-                    <Name>
-                      <Badge />
-                    </Name>
-                  </div>
-                  <div style={{ fontSize: '0.875rem', fontFamily: 'monospace', color: '#666' }}>
-                    <Address />
-                  </div>
+                <div className={styles.identityInfo}>
+                  <Name className={styles.name}>
+                    <Badge />
+                  </Name>
+                  <Address className={styles.address} />
                 </div>
               </div>
             </Identity>
@@ -82,7 +61,6 @@ export function ProfileDashboard() {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.ctaButton}
-              style={{ display: 'inline-block', marginTop: '1rem' }}
             >
               Get a Basename →
             </a>
