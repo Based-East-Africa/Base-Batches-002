@@ -1,0 +1,238 @@
+.container {
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  border: 1px solid #e0e0e0;
+}
+
+.title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.description {
+  margin: 0 0 1.5rem 0;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+/* Loading State */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 0;
+}
+
+.skeleton {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Profile Content */
+.profileContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.avatarSection {
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+}
+
+.nameSection {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.address {
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+/* Basename Status */
+.basenameStatus {
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.hasBasename {
+  display: flex;
+  gap: 1rem;
+  background: #d4edda;
+  border: 1px solid #28a745;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.noBasename {
+  display: flex;
+  gap: 1rem;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.statusIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.statusTitle {
+  margin: 0 0 0.25rem 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #1a1a1a;
+}
+
+.statusText {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #555;
+}
+
+/* CTA Section */
+.ctaSection {
+  text-align: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  border-radius: 12px;
+  border: 2px solid #0052ff;
+}
+
+.ctaButton {
+  display: inline-block;
+  padding: 0.875rem 2rem;
+  background: linear-gradient(135deg, #0052ff 0%, #0041cc 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 82, 255, 0.3);
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 82, 255, 0.4);
+}
+
+.ctaSubtext {
+  margin: 1rem 0 0 0;
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* Info Box */
+.infoBox {
+  padding: 1.25rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.infoTitle {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.infoList {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #555;
+}
+
+.infoList li {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.infoList li:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .container {
+    margin: 1rem auto;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+
+  .identity {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .nameSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+}

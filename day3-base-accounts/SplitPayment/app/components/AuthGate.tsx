@@ -2,7 +2,13 @@
 
 import { useAuth } from "../hooks/useAuth";
 import { SplitPaymentEnhanced } from "./SplitPaymentEnhanced";
+import { ProfileDashboard } from "./ProfileDashboard";
+import { Identity, Avatar, Name, Badge } from '@coinbase/onchainkit/identity';
+import { base } from 'viem/chains';
 import styles from "./SplitPayment.module.css";
+
+// Coinbase Verified attestation schema ID
+const COINBASE_VERIFIED_SCHEMA_ID = "0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9";
 
 /**
  * AuthGate Component
@@ -143,10 +149,10 @@ export function AuthGate() {
     );
   }
 
-  // Authenticated - show split payment with sign out option
+  // Authenticated - show profile + split payment with sign out option
   return (
     <div>
-      {/* Sign Out Header */}
+      {/* Sign Out Header with Identity */}
       <div
         style={{
           background: "#f9f9f9",
@@ -157,14 +163,38 @@ export function AuthGate() {
           alignItems: "center",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <span style={{ fontSize: "1.5rem" }}>👤</span>
-          <div>
-            <p style={{ margin: 0, fontSize: "0.85rem", color: "#666" }}>Signed in as</p>
-            <p style={{ margin: 0, fontFamily: "monospace", fontSize: "0.9rem", fontWeight: 600 }}>
-              {address?.slice(0, 6)}...{address?.slice(-4)}
-            </p>
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          {/* Use Identity components to show avatar + basename */}
+          <Identity
+            address={address as `0x${string}`}
+            chain={base}
+            schemaId={COINBASE_VERIFIED_SCHEMA_ID}
+          >
+            <Avatar
+              style={{
+                width: "48px",
+                height: "48px",
+                borderRadius: "50%",
+              }}
+            >
+              <Badge tooltip={true} />
+            </Avatar>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+              <p style={{ margin: 0, fontSize: "0.85rem", color: "#666" }}>Signed in as</p>
+              <Name
+                style={{
+                  margin: 0,
+                  fontSize: "0.95rem",
+                  fontWeight: 600,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                }}
+              >
+                <Badge />
+              </Name>
+            </div>
+          </Identity>
         </div>
         <button
           onClick={signOut}
@@ -190,6 +220,9 @@ export function AuthGate() {
           Sign Out
         </button>
       </div>
+
+      {/* Profile Dashboard */}
+      <ProfileDashboard />
 
       {/* Main Split Payment UI */}
       <SplitPaymentEnhanced userAddress={address || ""} />
