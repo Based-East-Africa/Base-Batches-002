@@ -1,6 +1,6 @@
 "use client";
 
-import { Identity, Avatar, Name, Badge, Address, useName } from '@coinbase/onchainkit/identity';
+import { Identity, Avatar, Name, Badge, Address, useName, Socials } from '@coinbase/onchainkit/identity';
 import { useAccount } from 'wagmi';
 import { base } from 'viem/chains';
 import styles from './ProfileDashboard.module.css';
@@ -43,6 +43,7 @@ export function ProfileDashboard() {
                     <Badge tooltip="Verified Account" />
                   </Name>
                   <Address className={styles.address} />
+                  <Socials address={address as `0x${string}`} chain={base} className={styles.socials} />
                 </div>
               </div>
             </Identity>

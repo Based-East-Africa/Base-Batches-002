@@ -102,6 +102,12 @@
   color: #666;
 }
 
+.socials {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
 /* Basename Status */
 .basenameStatus {
   padding: 1rem;
