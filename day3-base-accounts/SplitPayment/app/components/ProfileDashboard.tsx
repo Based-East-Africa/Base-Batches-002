@@ -1,6 +1,6 @@
 "use client";
 
-import { Identity, Avatar, Name, Badge, Address } from '@coinbase/onchainkit/identity';
+import { Identity, Avatar, Name, Badge, Address, useName } from '@coinbase/onchainkit/identity';
 import { useAccount } from 'wagmi';
 import { base } from 'viem/chains';
 import styles from './ProfileDashboard.module.css';
@@ -10,6 +10,7 @@ const COINBASE_VERIFIED_SCHEMA_ID = "0xf8b05c79f090979bf4a80270aba232dff11a10d9c
 
 export function ProfileDashboard() {
   const { address, isConnected } = useAccount();
+  const { data: name, isLoading: nameLoading } = useName({ address: address as `0x${string}`, chain: base });
 
   // Don't render if not connected
   if (!isConnected || !address) {
@@ -47,23 +48,47 @@ export function ProfileDashboard() {
             </Identity>
           </div>
 
-          {/* Info Box */}
+          {/* Info Box - conditional messaging based on Basename status */}
           <div className={styles.infoBox}>
-            <h3 className={styles.infoTitle}>What are Basenames?</h3>
-            <ul className={styles.infoList}>
-              <li>Human-readable names like "yourname.base.eth"</li>
-              <li>Works across all Base applications</li>
-              <li>Can be verified with Coinbase attestation</li>
-              <li>Stored on-chain as NFTs (transferable)</li>
-            </ul>
-            <a
-              href="https://www.base.org/names"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.ctaButton}
-            >
-              Get a Basename →
-            </a>
+            {!nameLoading && !name ? (
+              <>
+                <h3 className={styles.infoTitle}>You don&apos;t have a Basename yet</h3>
+                <p className={styles.infoText}>
+                  Get your own human-readable name on Base (like &quot;yourname.base.eth&quot;) to make your wallet easier to find and share.
+                </p>
+                <ul className={styles.infoList}>
+                  <li>Works across all Base applications</li>
+                  <li>Can be verified with Coinbase attestation</li>
+                  <li>Stored on-chain as an NFT (transferable)</li>
+                </ul>
+                <a
+                  href="https://www.base.org/names"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.ctaButton}
+                >
+                  Get a Basename →
+                </a>
+              </>
+            ) : (
+              <>
+                <h3 className={styles.infoTitle}>About Basenames</h3>
+                <ul className={styles.infoList}>
+                  <li>Human-readable names like &quot;yourname.base.eth&quot;</li>
+                  <li>Works across all Base applications</li>
+                  <li>Can be verified with Coinbase attestation</li>
+                  <li>Stored on-chain as NFTs (transferable)</li>
+                </ul>
+                <a
+                  href="https://www.base.org/names"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.ctaButton}
+                >
+                  Manage your Basename →
+                </a>
+              </>
+            )}
           </div>
         </div>
       </div>

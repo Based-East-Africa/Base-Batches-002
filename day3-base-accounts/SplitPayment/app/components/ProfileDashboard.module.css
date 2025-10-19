@@ -193,6 +193,13 @@
   color: #1a1a1a;
 }
 
+.infoText {
+  margin: 0 0 1rem 0;
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.6;
+}
+
 .infoList {
   margin: 0;
   padding-left: 1.25rem;
