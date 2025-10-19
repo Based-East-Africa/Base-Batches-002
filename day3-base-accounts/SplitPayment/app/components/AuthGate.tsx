@@ -177,7 +177,7 @@ export function AuthGate() {
                 borderRadius: "50%",
               }}
             >
-              <Badge tooltip={true} />
+              <Badge tooltip="Verified Account" />
             </Avatar>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
               <p style={{ margin: 0, fontSize: "0.85rem", color: "#666" }}>Signed in as</p>
@@ -191,7 +191,7 @@ export function AuthGate() {
                   gap: "0.5rem",
                 }}
               >
-                <Badge />
+                <Badge tooltip="Verified Account" />
               </Name>
             </div>
           </Identity>

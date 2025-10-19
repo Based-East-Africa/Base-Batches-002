@@ -34,12 +34,12 @@ export function ProfileDashboard() {
             >
               <div className={styles.identityLayout}>
                 <Avatar className={styles.avatar}>
-                  <Badge />
+                  <Badge tooltip="Verified Account" />
                 </Avatar>
 
                 <div className={styles.identityInfo}>
                   <Name className={styles.name}>
-                    <Badge />
+                    <Badge tooltip="Verified Account" />
                   </Name>
                   <Address className={styles.address} />
                 </div>
