@@ -1,8 +1,9 @@
 "use client";
 
-import { Identity, Avatar, Name, Badge, Address, useName, Socials } from '@coinbase/onchainkit/identity';
+import { Identity, Avatar, Name, Badge, Address, useName, Socials, useAddress } from '@coinbase/onchainkit/identity';
 import { useAccount } from 'wagmi';
 import { base } from 'viem/chains';
+import { useState } from 'react';
 import styles from './ProfileDashboard.module.css';
 
 // Coinbase Verified attestation schema ID on Base
@@ -11,6 +12,11 @@ const COINBASE_VERIFIED_SCHEMA_ID = "0xf8b05c79f090979bf4a80270aba232dff11a10d9c
 export function ProfileDashboard() {
   const { address, isConnected } = useAccount();
   const { data: name, isLoading: nameLoading } = useName({ address: address as `0x${string}`, chain: base });
+
+  // Forward resolution: search for a Basename
+  const [searchName, setSearchName] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const { data: resolvedAddress, isLoading: isResolving } = useAddress({ name: searchQuery, chain: base });
 
   // Don't render if not connected
   if (!isConnected || !address) {
@@ -89,6 +95,50 @@ export function ProfileDashboard() {
                   Manage your Basename →
                 </a>
               </>
+            )}
+          </div>
+
+          {/* Basename Search - Forward Resolution */}
+          <div className={styles.searchBox}>
+            <h3 className={styles.infoTitle}>Search for a Basename</h3>
+            <p className={styles.infoText}>
+              Look up any Basename to find its wallet address
+            </p>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                setSearchQuery(searchName);
+              }}
+              className={styles.searchForm}
+            >
+              <input
+                type="text"
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+                placeholder="e.g., vitalik.base.eth"
+                className={styles.searchInput}
+              />
+              <button type="submit" className={styles.searchButton} disabled={!searchName || isResolving}>
+                {isResolving ? 'Searching...' : 'Search'}
+              </button>
+            </form>
+
+            {/* Search Results */}
+            {searchQuery && (
+              <div className={styles.searchResults}>
+                {isResolving ? (
+                  <p className={styles.searchResultText}>Resolving {searchQuery}...</p>
+                ) : resolvedAddress ? (
+                  <div className={styles.searchResultSuccess}>
+                    <p className={styles.searchResultLabel}>Found address for {searchQuery}:</p>
+                    <code className={styles.searchResultAddress}>{resolvedAddress}</code>
+                  </div>
+                ) : (
+                  <p className={styles.searchResultError}>
+                    No address found for {searchQuery}. Make sure the name is correct and includes .base.eth
+                  </p>
+                )}
+              </div>
             )}
           </div>
         </div>

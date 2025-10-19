@@ -222,6 +222,110 @@
   margin-bottom: 0;
 }
 
+/* Search Box */
+.searchBox {
+  padding: 1.25rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.searchForm {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #0052ff;
+  box-shadow: 0 0 0 3px rgba(0, 82, 255, 0.1);
+}
+
+.searchInput::placeholder {
+  color: #9ca3af;
+}
+
+.searchButton {
+  padding: 0.625rem 1.5rem;
+  background: linear-gradient(135deg, #0052ff 0%, #0041cc 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+
+.searchButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 82, 255, 0.3);
+}
+
+.searchButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.searchResults {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+.searchResultText {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.searchResultSuccess {
+  background: #d4edda;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #28a745;
+}
+
+.searchResultLabel {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  color: #155724;
+  font-weight: 600;
+}
+
+.searchResultAddress {
+  display: block;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #1a1a1a;
+  word-break: break-all;
+}
+
+.searchResultError {
+  margin: 0;
+  padding: 1rem;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #856404;
+}
+
 /* Responsive */
 @media (max-width: 640px) {
   .container {
